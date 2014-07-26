@@ -1,8 +1,8 @@
 // Copyright (c) 2012 Pieter Wuille
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
-#ifndef _BITCOIN_ADFIREAN
-#define _BITCOIN_ADFIREAN 1
+#ifndef _BITCOIN_ADJUHAN
+#define _BITCOIN_ADJUHAN 1
 
 #include "netbase.h"
 #include "protocol.h"
@@ -116,50 +116,50 @@ public:
 //        tried ones) is evicted from it, back to the "new" buckets.
 //    * Bucket selection is based on cryptographic hashing, using a randomly-generated 256-bit key, which should not
 //      be observable by adversaries.
-//    * Several indexes are kept for high performance. Defining DEBUG_ADFIREAN will introduce frequent (and expensive)
+//    * Several indexes are kept for high performance. Defining DEBUG_ADJUHAN will introduce frequent (and expensive)
 //      consistency checks for the entire data structure.
 
 // total number of buckets for tried addresses
-#define ADFIREAN_TRIED_BUCKET_COUNT 64
+#define ADJUHAN_TRIED_BUCKET_COUNT 64
 
 // maximum allowed number of entries in buckets for tried addresses
-#define ADFIREAN_TRIED_BUCKET_SIZE 64
+#define ADJUHAN_TRIED_BUCKET_SIZE 64
 
 // total number of buckets for new addresses
-#define ADFIREAN_NEW_BUCKET_COUNT 256
+#define ADJUHAN_NEW_BUCKET_COUNT 256
 
 // maximum allowed number of entries in buckets for new addresses
-#define ADFIREAN_NEW_BUCKET_SIZE 64
+#define ADJUHAN_NEW_BUCKET_SIZE 64
 
 // over how many buckets entries with tried addresses from a single group (/16 for IPv4) are spread
-#define ADFIREAN_TRIED_BUCKETS_PER_GROUP 4
+#define ADJUHAN_TRIED_BUCKETS_PER_GROUP 4
 
 // over how many buckets entries with new addresses originating from a single group are spread
-#define ADFIREAN_NEW_BUCKETS_PER_SOURCE_GROUP 32
+#define ADJUHAN_NEW_BUCKETS_PER_SOURCE_GROUP 32
 
 // in how many buckets for entries with new addresses a single address may occur
-#define ADFIREAN_NEW_BUCKETS_PER_ADDRESS 4
+#define ADJUHAN_NEW_BUCKETS_PER_ADDRESS 4
 
 // how many entries in a bucket with tried addresses are inspected, when selecting one to replace
-#define ADFIREAN_TRIED_ENTRIES_INSPECT_ON_EVICT 4
+#define ADJUHAN_TRIED_ENTRIES_INSPECT_ON_EVICT 4
 
 // how old addresses can maximally be
-#define ADFIREAN_HORIZON_DAYS 30
+#define ADJUHAN_HORIZON_DAYS 30
 
 // after how many failed attempts we give up on a new node
-#define ADFIREAN_RETRIES 3
+#define ADJUHAN_RETRIES 3
 
 // how many successive failures are allowed ...
-#define ADFIREAN_MAX_FAILURES 10
+#define ADJUHAN_MAX_FAILURES 10
 
 // ... in at least this many days
-#define ADFIREAN_MIN_FAIL_DAYS 7
+#define ADJUHAN_MIN_FAIL_DAYS 7
 
 // the maximum percentage of nodes to return in a getaddr call
-#define ADFIREAN_GETADDR_MAX_PCT 23
+#define ADJUHAN_GETADDR_MAX_PCT 23
 
 // the maximum number of nodes to return in a getaddr call
-#define ADFIREAN_GETADDR_MAX 2500
+#define ADJUHAN_GETADDR_MAX 2500
 
 /** Stochastical (IP) address manager */
 class CAddrMan
@@ -232,7 +232,7 @@ protected:
     // nUnkBias determines how much to favor new addresses over tried ones (min=0, max=100)
     CAddress Select_(int nUnkBias);
 
-#ifdef DEBUG_ADFIREAN
+#ifdef DEBUG_ADJUHAN
     // Perform consistency check. Returns an error code or zero.
     int Check_();
 #endif
@@ -262,11 +262,11 @@ public:
         // Notice that vvTried, mapAddr and vVector are never encoded explicitly;
         // they are instead reconstructed from the other information.
         //
-        // vvNew is serialized, but only used if ADFIREAN_UNKOWN_BUCKET_COUNT didn't change,
+        // vvNew is serialized, but only used if ADJUHAN_UNKOWN_BUCKET_COUNT didn't change,
         // otherwise it is reconstructed as well.
         //
         // This format is more complex, but significantly smaller (at most 1.5 MiB), and supports
-        // changes to the ADFIREAN_ parameters without breaking the on-disk structure.
+        // changes to the ADJUHAN_ parameters without breaking the on-disk structure.
         {
             LOCK(cs);
             unsigned char nVersion = 0;
@@ -278,7 +278,7 @@ public:
             CAddrMan *am = const_cast<CAddrMan*>(this);
             if (fWrite)
             {
-                int nUBuckets = ADFIREAN_NEW_BUCKET_COUNT;
+                int nUBuckets = ADJUHAN_NEW_BUCKET_COUNT;
                 READWRITE(nUBuckets);
                 std::map<int, int> mapUnkIds;
                 int nIds = 0;
@@ -322,8 +322,8 @@ public:
                 am->mapInfo.clear();
                 am->mapAddr.clear();
                 am->vRandom.clear();
-                am->vvTried = std::vector<std::vector<int> >(ADFIREAN_TRIED_BUCKET_COUNT, std::vector<int>(0));
-                am->vvNew = std::vector<std::set<int> >(ADFIREAN_NEW_BUCKET_COUNT, std::set<int>());
+                am->vvTried = std::vector<std::vector<int> >(ADJUHAN_TRIED_BUCKET_COUNT, std::vector<int>(0));
+                am->vvNew = std::vector<std::set<int> >(ADJUHAN_NEW_BUCKET_COUNT, std::set<int>());
                 for (int n = 0; n < am->nNew; n++)
                 {
                     CAddrInfo &info = am->mapInfo[n];
@@ -331,7 +331,7 @@ public:
                     am->mapAddr[info] = n;
                     info.nRandomPos = vRandom.size();
                     am->vRandom.push_back(n);
-                    if (nUBuckets != ADFIREAN_NEW_BUCKET_COUNT)
+                    if (nUBuckets != ADJUHAN_NEW_BUCKET_COUNT)
                     {
                         am->vvNew[info.GetNewBucket(am->nKey)].insert(n);
                         info.nRefCount++;
@@ -344,7 +344,7 @@ public:
                     CAddrInfo info;
                     READWRITE(info);
                     std::vector<int> &vTried = am->vvTried[info.GetTriedBucket(am->nKey)];
-                    if (vTried.size() < ADFIREAN_TRIED_BUCKET_SIZE)
+                    if (vTried.size() < ADJUHAN_TRIED_BUCKET_SIZE)
                     {
                         info.nRandomPos = vRandom.size();
                         info.fInTried = true;
@@ -368,7 +368,7 @@ public:
                         int nIndex = 0;
                         READWRITE(nIndex);
                         CAddrInfo &info = am->mapInfo[nIndex];
-                        if (nUBuckets == ADFIREAN_NEW_BUCKET_COUNT && info.nRefCount < ADFIREAN_NEW_BUCKETS_PER_ADDRESS)
+                        if (nUBuckets == ADJUHAN_NEW_BUCKET_COUNT && info.nRefCount < ADJUHAN_NEW_BUCKETS_PER_ADDRESS)
                         {
                             info.nRefCount++;
                             vNew.insert(nIndex);
@@ -379,7 +379,7 @@ public:
         }
     });)
 
-    CAddrMan() : vRandom(0), vvTried(ADFIREAN_TRIED_BUCKET_COUNT, std::vector<int>(0)), vvNew(ADFIREAN_NEW_BUCKET_COUNT, std::set<int>())
+    CAddrMan() : vRandom(0), vvTried(ADJUHAN_TRIED_BUCKET_COUNT, std::vector<int>(0)), vvNew(ADJUHAN_NEW_BUCKET_COUNT, std::set<int>())
     {
          nKey.resize(32);
          RAND_bytes(&nKey[0], 32);
@@ -398,12 +398,12 @@ public:
     // Consistency check
     void Check()
     {
-#ifdef DEBUG_ADFIREAN
+#ifdef DEBUG_ADJUHAN
         {
             LOCK(cs);
             int err;
             if ((err=Check_()))
-                printf("ADFIREAN CONSISTENCY CHECK FAILED!!! err=%i\n", err);
+                printf("ADJUHAN CONSISTENCY CHECK FAILED!!! err=%i\n", err);
         }
 #endif
     }

@@ -35,9 +35,9 @@ static const unsigned int MAX_ORPHAN_TRANSACTIONS = MAX_BLOCK_SIZE/100;
 static const unsigned int MAX_INV_SZ = 50000;
 static const int64_t MIN_TX_FEE = 1000;
 static const int64_t MIN_RELAY_TX_FEE = MIN_TX_FEE;
-static const int64_t MAX_MONEY = 150000 * COIN;
-static const int64_t COIN_YEAR_REWARD = 1 * CENT; // 1% per year
-static const int64_t MAX_MINT_PROOF_OF_STAKE = 0.01 * COIN;	// 1% annual interest
+static const int64_t MAX_MONEY = 50000000 * COIN;
+static const int64_t COIN_YEAR_REWARD = 36500 * CENT; // 36500% per year
+static const int64_t MAX_MINT_PROOF_OF_STAKE = 1 * COIN;	// 36500% annual interest
 static const int MODIFIER_INTERVAL_SWITCH = 4000;
 
 inline bool MoneyRange(int64_t nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }

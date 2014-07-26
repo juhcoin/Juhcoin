@@ -1,4 +1,4 @@
-IDI_ICON1 ICON DISCARDABLE "icons/firecoin.ico"
+IDI_ICON1 ICON DISCARDABLE "icons/juhcoin.ico"
 
 #include <windows.h>             // needed for VERSIONINFO
 #include "../../clientversion.h" // holds the needed client version information
@@ -18,14 +18,14 @@ BEGIN
     BEGIN
         BLOCK "040904E4" // U.S. English - multilingual (hex)
         BEGIN
-            VALUE "CompanyName",        "Firecoin"
-            VALUE "FileDescription",    "firecoin-Qt (OSS GUI client for firecoin)"
+            VALUE "CompanyName",        "Juhcoin"
+            VALUE "FileDescription",    "juhcoin-Qt (OSS GUI client for juhcoin)"
             VALUE "FileVersion",        VER_FILEVERSION_STR
-            VALUE "InternalName",       "firecoin-qt"
-            VALUE "LegalCopyright",     "2009-2014 The Bitcoin developers, 2012-2014 The PPCoin developers, 2014 The Firecoin developers"
+            VALUE "InternalName",       "juhcoin-qt"
+            VALUE "LegalCopyright",     "2009-2014 The Bitcoin developers, 2012-2014 The PPCoin developers, 2014 The Firecoin developers, 2014 The Juhcoin developers"
             VALUE "LegalTrademarks1",   "Distributed under the MIT/X11 software license, see the accompanying file COPYING or http://www.opensource.org/licenses/mit-license.php."
-            VALUE "OriginalFilename",   "firecoin-qt.exe"
-            VALUE "ProductName",        "firecoin-Qt"
+            VALUE "OriginalFilename",   "juhcoin-qt.exe"
+            VALUE "ProductName",        "juhcoin-Qt"
             VALUE "ProductVersion",     VER_PRODUCTVERSION_STR
         END
     END
